@@ -1,25 +1,20 @@
 <script lang="ts" setup>
-import HelloWorld from './components/HelloWorld.vue'
 import NavBar from "./components/NavBar.vue";
 </script>
 
 <template>
 	<nav-bar/>
+	<router-view v-slot="{ Component }">
+		<keep-alive>
+			<component :is="Component" v-if="$route.meta.keepAlive" :key="$route.name"/>
+		</keep-alive>
+		<component :is="Component" v-if="!$route.meta.keepAlive" :key="$route.name"/>
+	</router-view>
 </template>
 
 <style scoped>
-.logo {
-	height: 6em;
-	padding: 1.5em;
-	will-change: filter;
-	transition: filter 300ms;
-}
-
-.logo:hover {
-	filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-	filter: drop-shadow(0 0 2em #42b883aa);
+html *
+{
+	font-family: LXGW WenKai Lite, serif !important;
 }
 </style>

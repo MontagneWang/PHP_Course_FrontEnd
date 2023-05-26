@@ -1,30 +1,39 @@
 import * as VueRouter from 'vue-router'
-import About from '../components/HelloWorld.vue'
-import Home from '../App.vue'
+import Login from '../views/PageLogin.vue'
+import Search from '../views/PageSearch.vue'
+import Backend from '../views/PageBackEnd.vue'
 
 const routes = [
 	{
 		path: '/',
-		name: 'home',
-		component: Home,
+		name: 'Search',
+		component: Search,
 		meta: {
-			title: 'Main',
+			title: 'Search',
 			keepAlive: true,
 			requireAuth: false
 		}
 	},
 	{
-		path: '/about',
-		name: 'about',
-		component: About,
+		path: '/Login',
+		name: 'Login',
+		component: Login,
 		meta: {
-			title: 'About',
+			title: 'Login',
 			keepAlive: true,
 			requireAuth: false
 		}
-		// 动态加载
-		// component: () => import(/* webpackChunkName: "about" */ '../views/about.vue')
-	}
+	},
+	{
+		path: '/backend',
+		name: 'Backend',
+		component: Backend,
+		meta: {
+			title: 'Backend',
+			keepAlive: true,
+			requireAuth: false
+		}
+	},
 ]
 
 const router = VueRouter.createRouter({
