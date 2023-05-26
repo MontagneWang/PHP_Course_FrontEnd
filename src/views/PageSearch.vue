@@ -1,11 +1,224 @@
 <script lang="ts" setup>
+import {onMounted, reactive, ref, watchEffect} from "vue";
+import axios from '../api/axios';
 
+let data = ref([])
+onMounted(async () => {
+	let {data: response} = await axios.get('/FinalTerm/getCompanyData.php?page=1');
+	data.value = response
+})
+
+const currentTab = ref(0);
+
+function changeTab(tab) {
+	currentTab.value = tab;
+}
+
+watchEffect(() => {
+	switch (currentTab.value) {
+		case 0:
+			(async () => {
+				let {data: response} = await axios.get('/FinalTerm/getCompanyData.php?page=1');
+				data.value = response
+			})()
+			break;
+		case 1:
+			(async () => {
+				let {data: response} = await axios.get('/FinalTerm/getPositionsData.php?page=1');
+				data.value = response
+			})()
+			break;
+		case 2:
+			(async () => {
+				let {data: response} = await axios.get('/FinalTerm/getTalentsData.php?page=1');
+				data.value = response
+			})()
+			break;
+	}
+})
 </script>
 
 <template>
-	<h1>PageSearch</h1>
+
+	<div class="table">
+		<!-- Tab 头部 -->
+		<div class="tabs">
+			<h2>请选择您要搜索的类别：</h2>
+			<button :class="{ active: currentTab === 0 }" @click="changeTab(0)">公司</button>
+			<button :class="{ active: currentTab === 1 }" @click="changeTab(1)">职业</button>
+			<button :class="{ active: currentTab === 2 }" @click="changeTab(2)">人才</button>
+		</div>
+
+		<!-- Tab 内容 -->
+		<div class="tab-content">
+			<div v-show="currentTab === 0">
+				<table>
+					<thead>
+					<tr>
+						<th>编号</th>
+						<th>所属行业</th>
+						<th>名称</th>
+						<th>地址</th>
+						<th>法人</th>
+						<th>注册资本</th>
+						<th>其它介绍</th>
+						<th>联系方式</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr v-for="(item, index) in data" :key="index">
+						<td style="text-align: center;">{{ item.id }}</td>
+						<td>{{ item.industry }}</td>
+						<td>{{ item.name }}</td>
+						<td>{{ item.address }}</td>
+						<td>{{ item.legal_person }}</td>
+						<td style="text-align: right;">{{ item.registered_capital }}</td>
+						<td>{{ item.other_info }}</td>
+						<td style="text-align: right;">{{ item.contact }}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div v-show="currentTab === 1">
+				<table>
+					<thead>
+					<tr>
+						<th style="width: 2em">编号</th>
+						<th style="width: 8em">名称</th>
+						<th style="width: 2em">人数</th>
+						<th style="width: 7em">发布时间</th>
+						<th>任职要求</th>
+						<th>待遇</th>
+						<th style="width: 4em">是否补助</th>
+						<th style="width: 7em">联系方式</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr v-for="(item, index) in data" :key="index">
+						<td style="text-align: center;">
+							{{ item.id }}
+						</td>
+						<td>{{ item.name }}</td>
+						<td>{{ item.number_of_people }}</td>
+						<td>{{ item.release_time }}</td>
+						<td>{{ item.job_requirements }}</td>
+						<td style="text-align: right;">
+							{{ item.salary }}
+						</td>
+						<td>{{ item.subsidy }}</td>
+						<td style="text-align: right;">
+							{{ item.contact }}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div v-show="currentTab === 2">
+				<table>
+					<thead>
+					<tr>
+						<th style="width: 2em">编号</th>
+						<th>姓名</th>
+						<th>求职类型</th>
+						<th>年龄</th>
+						<th>籍贯</th>
+						<th>学历</th>
+						<th>简历</th>
+						<th>联系方式</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr v-for="(item, index) in data" :key="index">
+						<td style="text-align: center;">{{ item.id }}</td>
+						<td>{{ item.name }}</td>
+						<td>{{ item.job_type }}</td>
+						<td>{{ item.age }}</td>
+						<td>{{ item.native_place }}</td>
+						<td style="text-align: right;">{{ item.education }}</td>
+						<td>{{ item.resume }}</td>
+						<td style="text-align: right;">{{ item.contact }}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
 </template>
 
 <style lang="scss" scoped>
+.tabs {
+	display: flex;
+	align-items: center;
+
+	button {
+		display: inline-block;
+		margin-right: 15px;
+		width: 70px;
+		height: 40px;
+		cursor: pointer;
+		text-align: center;
+	}
+}
+
+.active {
+	color: blue;
+}
+
+.table {
+	width: 90vw;
+	margin: 0 auto;
+}
+
+table {
+
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+tr {
+	&:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+}
+
+#links {
+	text-align: center;
+	margin-top: 20px;
+
+	a {
+		&:hover {
+			background-color: #ddd;
+		}
+	}
+
+	span {
+		background-color: #ddd;
+		color: #333;
+		border: 1px solid #ddd;
+	}
+}
+
+#links a, #links span {
+	display: inline-block;
+	padding: 5px 5px;
+	margin-right: 5px;
+	color: #333;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	text-decoration: none;
+}
 
 </style>

@@ -16,6 +16,8 @@
 </template>
 <style lang="scss" scoped>
 .navbar {
+	overflow-x: hidden;
+
 	nav {
 		position: relative;
 		top: 0;
@@ -26,10 +28,10 @@
 		line-height: 2em;
 		background-color: rgba(255, 255, 255, 1);
 		border: 1px solid rgba(218, 218, 218, 1);
-		box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.15);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 		z-index: 2;
 		text-align: center;
-		font-size: 2em;
+		font-size: 1.5em;
 
 		a {
 			font-weight: bold;
