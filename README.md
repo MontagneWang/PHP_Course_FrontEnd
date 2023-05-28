@@ -1,18 +1,36 @@
-# Vue 3 + TypeScript + Vite
-
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support For `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+题目：人才招聘系统   
+系统实体：企业、职位、人才、应聘   
+---   
+前台基础功能   
+一：企业列表及检索    
+1）	按企业查询。   
+ 输入：企业名称    
+输出：企业列表   
+2）	按职位列表及检索   
+输入：职位名    
+输出：职位列表   
+3）	人才列表及检索   
+ 输入：人员名 &求职类型   
+输出：人员列表   
+   
+二、基本操作   
+用户登录或注册   
+用户简历维护   
+用户操作：收藏职位、收藏企业、应聘职位   
+用户信息：收藏的职位、收藏的企业、应聘记录   
+（增删改查）   
+   
+企业登录或注册   
+企业发布职位列表   
+职位人才应聘列表   
+（增册改查）   
+---   
+后台功能   
+企业管理–审核   
+职位管理–审核   
+人才管理–审核   
+---   
+~~数据表   
+企业：编号、所属行业、名称、地址、法人、注册资本、其它介绍、联系方式   
+职位：编号、名称、人数、发布时间、任职要求、待遇、是否补助、联系方式   
+人才：编号、姓名、求职类型、年龄、籍贯、学历、简历、联系方式~~   

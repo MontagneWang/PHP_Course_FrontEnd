@@ -3,12 +3,10 @@ import {computed, onMounted, reactive, ref, watch, watchEffect} from "vue";
 import axios from '../api/axios';
 
 let data = ref([])
-// let allCount = ref(0)
+let buttonCount = ref(0)
 onMounted(async () => {
 	let {data: response} = await axios.get('/FinalTerm/getCompanyData.php?page=1');
 	data.value = response
-	// let {data: count} = await axios.get('/FinalTerm/getCompanyCount.php');
-	// allCount.value = count
 })
 
 let currentTab = ref(0);
@@ -29,17 +27,33 @@ watchEffect(async () => {
 		2: 'getTalentsData'
 	};
 	let category = categories[currentTab.value];
-
 	let {data: response} = await axios.get(`/FinalTerm/${category}.php?page=${currentPage.value}`);
 	data.value = response
 })
 // 类别改动时，将 currentPage 重置为 1
 watch(currentTab, () => {
 	// 设置延时，因为在修改[列表]时也会同步修改[页数]，有几率导致页数无法重置，所以页数的修改需要滞后于列表修改请求
-	setTimeout(()=>{
+	setTimeout(() => {
 		currentPage.value = 1
-	},50)
+		keyWords.value = ''
+	}, 50)
 })
+
+let keyWords = ref('')
+
+async function sendKeyWords(keyWords) {
+	let {data: response} = await axios.get(`/FinalTerm/getKeyWords.php?kwd=${keyWords}&cate=${currentTab.value}`)
+	data.value = response
+	console.log(currentTab.value)
+}
+
+watch(keyWords, (keyWords) => {
+	sendKeyWords(keyWords)
+})
+watchEffect(() => {
+	buttonCount.value = data.value.length
+})
+
 </script>
 
 <template>
@@ -54,8 +68,11 @@ watch(currentTab, () => {
 		</div>
 
 		<span>输入您想搜索的内容：</span>
-		<input type="text">
-		<button>搜索一下</button>
+		<input v-model="keyWords"
+		       placeholder="您可通过任意关键字搜索"
+		       type="text"
+		       @keyup.enter="sendKeyWords(keyWords)">
+		<!--<button @click="sendKeyWords(keyWords)">搜索一下</button>-->
 		<br>
 		<br>
 		<!-- Tab 内容 -->
@@ -152,7 +169,7 @@ watch(currentTab, () => {
 			</div>
 		</div>
 	</div>
-
+	<!--todo 动态按钮数 通过 data.length 动态获取长度-->
 	<div class="page-button">
 		<ul>
 			<li v-for="index in 5" :key="index">
@@ -164,9 +181,10 @@ watch(currentTab, () => {
 </template>
 
 <style lang="scss" scoped>
-input{
+input {
 	margin-right: 10px;
 }
+
 .page-button {
 	margin: 0 10px;
 
