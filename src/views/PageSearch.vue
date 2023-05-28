@@ -42,9 +42,12 @@ watch(currentTab, () => {
 let keyWords = ref('')
 
 async function sendKeyWords(keyWords) {
-	let {data: response} = await axios.get(`/FinalTerm/getKeyWords.php?kwd=${keyWords}&cate=${currentTab.value}`)
+	let url = ''
+	keyWords.trim() === '' ?
+			url = '/FinalTerm/getCompanyData.php?page=1' :
+			url = `/FinalTerm/getKeyWords.php?kwd=${keyWords}&cate=${currentTab.value}`
+	let {data: response} = await axios.get(url)
 	data.value = response
-	console.log(currentTab.value)
 }
 
 watch(keyWords, (keyWords) => {
@@ -53,7 +56,7 @@ watch(keyWords, (keyWords) => {
 watchEffect(() => {
 	buttonCount.value = data.value.length
 })
-
+let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_, i) => i))
 </script>
 
 <template>
@@ -63,7 +66,7 @@ watchEffect(() => {
 		<div class="tabs">
 			<h2>请选择您要搜索的类别：</h2>
 			<button :class="{ active: currentTab === 0 }" @click="changeTab(0)">公司</button>
-			<button :class="{ active: currentTab === 1 }" @click="changeTab(1)">职业</button>
+			<button :class="{ active: currentTab === 1 }" @click="changeTab(1)">职位</button>
 			<button :class="{ active: currentTab === 2 }" @click="changeTab(2)">人才</button>
 		</div>
 
@@ -169,8 +172,7 @@ watchEffect(() => {
 			</div>
 		</div>
 	</div>
-	<!--todo 动态按钮数 通过 data.length 动态获取长度-->
-	<div class="page-button">
+	<div v-show="data.length>9" class="page-button">
 		<ul>
 			<li v-for="index in 5" :key="index">
 				<button @click="changePage(index)">{{ index }}</button>
