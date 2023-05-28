@@ -1,40 +1,44 @@
 <script lang="ts" setup>
-import {onMounted, reactive, ref, watchEffect} from "vue";
+import {computed, onMounted, reactive, ref, watch, watchEffect} from "vue";
 import axios from '../api/axios';
 
 let data = ref([])
+// let allCount = ref(0)
 onMounted(async () => {
 	let {data: response} = await axios.get('/FinalTerm/getCompanyData.php?page=1');
 	data.value = response
+	// let {data: count} = await axios.get('/FinalTerm/getCompanyCount.php');
+	// allCount.value = count
 })
 
-const currentTab = ref(0);
+let currentTab = ref(0);
+let currentPage = ref(1)
 
 function changeTab(tab) {
 	currentTab.value = tab;
 }
 
-watchEffect(() => {
-	switch (currentTab.value) {
-		case 0:
-			(async () => {
-				let {data: response} = await axios.get('/FinalTerm/getCompanyData.php?page=1');
-				data.value = response
-			})()
-			break;
-		case 1:
-			(async () => {
-				let {data: response} = await axios.get('/FinalTerm/getPositionsData.php?page=1');
-				data.value = response
-			})()
-			break;
-		case 2:
-			(async () => {
-				let {data: response} = await axios.get('/FinalTerm/getTalentsData.php?page=1');
-				data.value = response
-			})()
-			break;
-	}
+function changePage(page) {
+	currentPage.value = page;
+}
+
+watchEffect(async () => {
+	const categories = {
+		0: 'getCompanyData',
+		1: 'getPositionsData',
+		2: 'getTalentsData'
+	};
+	let category = categories[currentTab.value];
+
+	let {data: response} = await axios.get(`/FinalTerm/${category}.php?page=${currentPage.value}`);
+	data.value = response
+})
+// 类别改动时，将 currentPage 重置为 1
+watch(currentTab, () => {
+	// 设置延时，因为在修改[列表]时也会同步修改[页数]，有几率导致页数无法重置，所以页数的修改需要滞后于列表修改请求
+	setTimeout(()=>{
+		currentPage.value = 1
+	},50)
 })
 </script>
 
@@ -49,6 +53,11 @@ watchEffect(() => {
 			<button :class="{ active: currentTab === 2 }" @click="changeTab(2)">人才</button>
 		</div>
 
+		<span>输入您想搜索的内容：</span>
+		<input type="text">
+		<button>搜索一下</button>
+		<br>
+		<br>
 		<!-- Tab 内容 -->
 		<div class="tab-content">
 			<div v-show="currentTab === 0">
@@ -142,11 +151,38 @@ watchEffect(() => {
 				</table>
 			</div>
 		</div>
-
 	</div>
+
+	<div class="page-button">
+		<ul>
+			<li v-for="index in 5" :key="index">
+				<button @click="changePage(index)">{{ index }}</button>
+			</li>
+		</ul>
+	</div>
+
 </template>
 
 <style lang="scss" scoped>
+input{
+	margin-right: 10px;
+}
+.page-button {
+	margin: 0 10px;
+
+	ul {
+		li {
+			margin: 0 10px;
+			display: inline-block;
+
+			button {
+				width: 40px;
+				height: 40px;
+			}
+		}
+	}
+}
+
 .tabs {
 	display: flex;
 	align-items: center;
@@ -171,7 +207,6 @@ watchEffect(() => {
 }
 
 table {
-
 	border-collapse: collapse;
 	width: 100%;
 	margin-bottom: 20px;
