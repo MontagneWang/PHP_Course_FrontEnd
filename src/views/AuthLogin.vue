@@ -13,15 +13,21 @@ function changeTab(tab) {
 	currentTab.value = tab;
 }
 
-// todo 通过 post 发送请求
+// fixme 需要解决通过 post 发送请求（目前后端收不到 post 数据）
 async function handleSubmit() {
-	let {data: response} = await axios.post(`/FinalTerm/____.php`,{
-		currentTab: currentTab.value,
+	let {data: response} = await axios.post(`/FinalTerm/AuthLogin.php`,{
+		identity: currentTab.value,
 		username: username.value,
 		password: password.value
 	});
 	data.value = response
 }
+// async function handleSubmit() {
+// 	let {data: response} = await axios.get(`/FinalTerm/AuthLogin.php?identity=${currentTab.value}&username=${username.value}&password=${password.value}`)
+// 	data.value = response
+// 	console.log(data.value)
+// 	// todo 登录成功则路由放行
+// }
 </script>
 
 <template>
