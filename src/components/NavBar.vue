@@ -7,7 +7,9 @@
 		<nav>
 			<router-link to="/">首页</router-link>
 			|
-			<router-link to="/login">登录</router-link>
+			<router-link to="/user">用户</router-link>
+			|
+			<router-link to="/company">企业</router-link>
 			|
 			<router-link to="/backend">后台</router-link>
 		</nav>

@@ -19,15 +19,13 @@ function changeTab(tab) {
 function changePage(page) {
 	currentPage.value = page;
 }
-
+const categories = {
+	0: 'getCompanyData',
+	1: 'getPositionsData',
+	2: 'getTalentsData'
+};
 watchEffect(async () => {
-	const categories = {
-		0: 'getCompanyData',
-		1: 'getPositionsData',
-		2: 'getTalentsData'
-	};
-	let category = categories[currentTab.value];
-	let {data: response} = await axios.get(`/FinalTerm/${category}.php?page=${currentPage.value}`);
+	let {data: response} = await axios.get(`/FinalTerm/${categories[currentTab.value]}.php?page=${currentPage.value}`);
 	data.value = response
 })
 // 类别改动时，将 currentPage 重置为 1
@@ -42,9 +40,9 @@ watch(currentTab, () => {
 let keyWords = ref('')
 
 async function sendKeyWords(keyWords) {
-	let url = ''
+	let url: string
 	keyWords.trim() === '' ?
-			url = '/FinalTerm/getCompanyData.php?page=1' :
+			url = `/FinalTerm/${categories[currentTab.value]}.php?page=1` :
 			url = `/FinalTerm/getKeyWords.php?kwd=${keyWords}&cate=${currentTab.value}`
 	let {data: response} = await axios.get(url)
 	data.value = response
@@ -130,7 +128,7 @@ let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_
 						<td>{{ item.name }}</td>
 						<td>{{ item.number_of_people }}</td>
 						<td>{{ item.release_time }}</td>
-						<td>{{ item.job_requirements }}</td>
+						<td style="font-size: 0.8rem">{{ item.job_requirements }}</td>
 						<td style="text-align: right;">
 							{{ item.salary }}
 						</td>
@@ -171,13 +169,15 @@ let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_
 				</table>
 			</div>
 		</div>
-	</div>
-	<div v-show="data.length>9" class="page-button">
-		<ul>
-			<li v-for="index in 5" :key="index">
-				<button @click="changePage(index)">{{ index }}</button>
-			</li>
-		</ul>
+
+		<div v-show="data.length>9" class="page-button">
+			<ul>
+				<li v-for="index in 5" :key="index">
+					<button @click="changePage(index)">{{ index }}</button>
+				</li>
+			</ul>
+		</div>
+
 	</div>
 
 </template>
@@ -188,9 +188,10 @@ input {
 }
 
 .page-button {
-	margin: 0 10px;
+	margin: -5px 0;
 
 	ul {
+		padding-left: 0;
 		li {
 			margin: 0 10px;
 			display: inline-block;

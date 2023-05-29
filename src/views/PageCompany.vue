@@ -3,8 +3,7 @@
 </script>
 
 <template>
-	<h1>PageLogin</h1>
-
+	<h1>PageCompany</h1>
 </template>
 
 <style lang="scss" scoped>
