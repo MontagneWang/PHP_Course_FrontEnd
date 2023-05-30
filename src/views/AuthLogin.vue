@@ -1,46 +1,87 @@
 <script lang="ts" setup>
-import {ref} from "vue";
+import {ref, watchEffect} from "vue";
 import axios from "../api/axios";
+import Modal from '../utils/ToastComp.vue'
+import {useRouter} from 'vue-router'
+import {useCounterStore} from '../stores'
 
+const store = useCounterStore()
+const router = useRouter()
+const showModal = ref(false)
 let currentTab = ref(0);
 let username = ref('');
 let password = ref('');
 let passwordConfirm = ref('');
 let isLogin = ref(false);
-let data = ref([]);
+let data = ref({});
+const config = {
+	headers: {
+		'Content-Type': 'application/x-www-form-urlencoded',
+	},
+};
 
 function changeTab(tab) {
 	currentTab.value = tab;
 }
 
-// fixme 需要解决通过 post 发送请求（目前后端收不到 post 数据）
+// todo 登录成功则路由放行
 async function handleSubmit() {
-	let {data: response} = await axios.post(`/FinalTerm/AuthLogin.php`,{
+	let {data: response} = await axios.post(`/FinalTerm/AuthLogin.php`, {
 		identity: currentTab.value,
 		username: username.value,
 		password: password.value
-	});
+	}, config);
 	data.value = response
+	if (data.value.code === '20001') {
+		switch (data.value.data.identity) {
+			case '0':
+				store.LoginIdentity = 0
+				await router.push('/user')
+				break
+			case '1':
+				store.LoginIdentity = 1
+				await router.push('/company')
+				break
+			case '2':
+				store.LoginIdentity = 2
+				await router.push('/backend')
+				break
+		}
+	} else if (data.value.code === '40101') {
+		showModal.value = true
+	}
 }
-// async function handleSubmit() {
-// 	let {data: response} = await axios.get(`/FinalTerm/AuthLogin.php?identity=${currentTab.value}&username=${username.value}&password=${password.value}`)
-// 	data.value = response
-// 	console.log(data.value)
-// 	// todo 登录成功则路由放行
-// }
 </script>
 
 <template>
+	<Teleport to="body">
+		<!-- 使用这个 modal 组件，传入 prop -->
+		<modal :show="showModal" @close="showModal = false">
+			<template #header>
+				<h3>登陆失败</h3>
+			</template>
+			<template #body>
+				请检查您的用户名或密码，并保证没有选错登录类型
+			</template>
+		</modal>
+	</Teleport>
+
 	<div class="login">
 		<div class="tabs">
 			<span>请选择您的登录身份：</span>
-			<button :class="{ active: currentTab === 0 }" @click="changeTab(0)">人才用户</button>
-			<button :class="{ active: currentTab === 1 }" @click="changeTab(1)">公司企业</button>
-			<button :class="{ active: currentTab === 2 }" @click="changeTab(2)">平台管理员</button>
+			<button :class="{ active: currentTab === 0 }"
+			        @click="changeTab(0)">人才用户
+			</button>
+			<button :class="{ active: currentTab === 1 }"
+			        @click="changeTab(1)">公司企业
+			</button>
+			<button v-show="isLogin"
+			        :class="{ active: currentTab === 2 }"
+			        @click="changeTab(2)">平台管理员
+			</button>
 		</div>
 
 		<form @submit.prevent="handleSubmit">
-			<!-- 根据 isLogin 改变标题和按钮文本 -->
 			<br>
 			<br>
 			<div>

@@ -5,6 +5,11 @@ import Search from '../views/PageSearch.vue'
 import Company from '../views/PageCompany.vue'
 import Backend from '../views/PageBackEnd.vue'
 
+import pinia from '../stores/store'
+import {useCounterStore} from "../stores/"
+
+const store = useCounterStore(pinia)
+
 const routes = [
 	{
 		path: '/',
@@ -33,7 +38,8 @@ const routes = [
 		meta: {
 			title: 'User',
 			keepAlive: true,
-			requireAuth: true
+			requireAuth: true,
+			identityAuth: 0
 		}
 	},
 	{
@@ -43,7 +49,8 @@ const routes = [
 		meta: {
 			title: 'Company',
 			keepAlive: true,
-			requireAuth: true
+			requireAuth: true,
+			identityAuth: 1
 		}
 	},
 	{
@@ -53,21 +60,22 @@ const routes = [
 		meta: {
 			title: 'Backend',
 			keepAlive: true,
-			requireAuth: true
+			requireAuth: true,
+			identityAuth: 2
 		}
 	},
 ]
-
 
 const router = VueRouter.createRouter({
 	history: VueRouter.createWebHashHistory(),
 	routes,
 })
+
 router.beforeEach((to, from, next) => {
-	if (to.meta.requireAuth) {
-		next('/login');
-	} else {
+	if (!to.meta.requireAuth || store.LoginIdentity === 2 || store.LoginIdentity === to.meta.identityAuth) {
 		next();
+	} else if (to.meta.requireAuth && store.LoginIdentity !== to.meta.identityAuth) {
+		next('/login');
 	}
 });
 export default router
