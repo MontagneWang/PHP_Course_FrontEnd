@@ -8,6 +8,7 @@ import {useCounterStore} from '../stores'
 const store = useCounterStore()
 const router = useRouter()
 const showModal = ref(false)
+let toastText = ref('')
 let currentTab = ref(0);
 let username = ref('');
 let password = ref('');
@@ -25,6 +26,15 @@ function changeTab(tab) {
 }
 
 async function handleSubmit() {
+	if (!isLogin.value) {
+		if (passwordConfirm.value !== password.value) {
+			toastText.value = '两次输入的密码不一致，请重新输入'
+			showModal.value = true
+			password.value = ''
+			passwordConfirm.value = ''
+			return
+		}
+	}
 	let {data: response} = await axios.post(`/FinalTerm/AuthLogin.php`, {
 		isLogin: isLogin.value,
 		identity: currentTab.value,
@@ -36,23 +46,47 @@ async function handleSubmit() {
 		case '20001':
 			switch (data.value.data.identity) {
 				case '0':
+					username.value = ''
+					password.value = ''
 					store.LoginIdentity = 0
 					await router.push('/user')
 					break
 				case '1':
+					username.value = ''
+					password.value = ''
 					store.LoginIdentity = 1
 					await router.push('/company')
 					break
 				case '2':
+					username.value = ''
+					password.value = ''
 					store.LoginIdentity = 2
 					await router.push('/backend')
 					break
 			}
 			break
+		case '20101':
+			switch (data.value.data.identity) {
+				case '0':
+					username.value = ''
+					password.value = ''
+					store.LoginIdentity = 0
+					await router.push('/user')
+					break
+				case '1':
+					username.value = ''
+					password.value = ''
+					store.LoginIdentity = 1
+					await router.push('/company')
+					break
+			}
+			break
 		case '40101':
+			toastText.value = '请检查您的用户名或密码，并保证没有选错登录类型'
 			showModal.value = true
 			break
 		case '40201':
+			toastText.value = '用户名已存在，请更换'
 			showModal.value = true
 			break
 	}
@@ -67,7 +101,7 @@ async function handleSubmit() {
 				<h3>{{ isLogin ? '登陆' : '注册' }}失败</h3>
 			</template>
 			<template #body>
-				{{ data.code === '40101' ? '请检查您的用户名或密码，并保证没有选错登录类型' : '用户名已存在，请更换' }}
+				{{ toastText }}
 			</template>
 		</modal>
 	</Teleport>
