@@ -24,31 +24,37 @@ function changeTab(tab) {
 	currentTab.value = tab;
 }
 
-// todo 登录成功则路由放行
 async function handleSubmit() {
 	let {data: response} = await axios.post(`/FinalTerm/AuthLogin.php`, {
+		isLogin: isLogin.value,
 		identity: currentTab.value,
 		username: username.value,
 		password: password.value
 	}, config);
 	data.value = response
-	if (data.value.code === '20001') {
-		switch (data.value.data.identity) {
-			case '0':
-				store.LoginIdentity = 0
-				await router.push('/user')
-				break
-			case '1':
-				store.LoginIdentity = 1
-				await router.push('/company')
-				break
-			case '2':
-				store.LoginIdentity = 2
-				await router.push('/backend')
-				break
-		}
-	} else if (data.value.code === '40101') {
-		showModal.value = true
+	switch (data.value.code) {
+		case '20001':
+			switch (data.value.data.identity) {
+				case '0':
+					store.LoginIdentity = 0
+					await router.push('/user')
+					break
+				case '1':
+					store.LoginIdentity = 1
+					await router.push('/company')
+					break
+				case '2':
+					store.LoginIdentity = 2
+					await router.push('/backend')
+					break
+			}
+			break
+		case '40101':
+			showModal.value = true
+			break
+		case '40201':
+			showModal.value = true
+			break
 	}
 }
 </script>
@@ -58,10 +64,10 @@ async function handleSubmit() {
 		<!-- 使用这个 modal 组件，传入 prop -->
 		<modal :show="showModal" @close="showModal = false">
 			<template #header>
-				<h3>登陆失败</h3>
+				<h3>{{ isLogin ? '登陆' : '注册' }}失败</h3>
 			</template>
 			<template #body>
-				请检查您的用户名或密码，并保证没有选错登录类型
+				{{ data.code === '40101' ? '请检查您的用户名或密码，并保证没有选错登录类型' : '用户名已存在，请更换' }}
 			</template>
 		</modal>
 	</Teleport>
@@ -107,7 +113,7 @@ async function handleSubmit() {
 
 			<div class="foot-button">
 				<button type="submit">点击{{ isLogin ? '登录' : '注册' }}</button>
-				<button @click="isLogin=!isLogin">切换到 {{ isLogin ? '注册' : '登录' }}</button>
+				<button @click.prevent="isLogin=!isLogin">切换到 {{ isLogin ? '注册' : '登录' }}</button>
 			</div>
 		</form>
 	</div>
