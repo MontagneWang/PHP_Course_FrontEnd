@@ -44,6 +44,7 @@ async function handleSubmit() {
 	data.value = response
 	switch (data.value.code) {
 		case '20001':
+			store.userId = data.value.data.id
 			switch (data.value.data.identity) {
 				case '0':
 					username.value = ''
@@ -66,6 +67,7 @@ async function handleSubmit() {
 			}
 			break
 		case '20101':
+			store.userId = data.value.data.id
 			switch (data.value.data.identity) {
 				case '0':
 					username.value = ''
