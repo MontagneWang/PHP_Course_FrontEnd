@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import {onMounted, reactive} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import axios from "../api/axios";
 import {useCounterStore} from '../stores'
-import {ref} from "vue/dist/vue";
 import Modal from '../utils/ToastComp.vue'
 
 const store = useCounterStore()
@@ -14,14 +13,22 @@ let formData = reactive({
 	peopleNum: 1,
 	time: '2023-05-31',
 	require: '',
-	salary: 0,
+	salary: '',
 	subsidy: 0,
 	tel: '',
 })
-let responseData = reactive({})
+let responseData = reactive({
+	code: '',
+	message: '',
+	status: ''
+})
+let headText = ''
+let bodyText = ''
 
 async function handleSubmit() {
-	if (!formData.name || !formData.require || !formData.tel){
+	if (!formData.name || !formData.require || !formData.tel || !formData.salary) {
+		headText = '发布内容不能有空项'
+		bodyText = '请检查是否所有选项都已填写，并且待遇需要为正数'
 		showModal.value = true
 		return
 	}
@@ -29,6 +36,18 @@ async function handleSubmit() {
 		formData,
 	}, config);
 	responseData = response
+	if (responseData.code === '20301') {
+		headText = '职位已成功发布'
+		bodyText = '您发布的职位将在后台审核通过后展示在首页'
+		showModal.value = true
+		formData.name = ''
+		formData.peopleNum = 1
+		formData.time = '2023-05-31'
+		formData.require = ''
+		formData.salary = ''
+		formData.subsidy = 0
+		formData.tel = ''
+	}
 }
 
 </script>
@@ -38,10 +57,10 @@ async function handleSubmit() {
 		<!-- 使用这个 modal 组件，传入 prop -->
 		<modal :show="showModal" @close="showModal = false">
 			<template #header>
-				<h3>发布内容不能有空项</h3>
+				<h3>{{ headText }}</h3>
 			</template>
 			<template #body>
-
+				<span>{{ bodyText }}</span>
 			</template>
 		</modal>
 	</Teleport>

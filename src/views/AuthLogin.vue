@@ -6,7 +6,7 @@ import {useRouter} from 'vue-router'
 import {useCounterStore} from '../stores'
 
 const store = useCounterStore()
-const {POST_CONFIG:config} = store
+const {POST_CONFIG: config} = store
 const router = useRouter()
 const showModal = ref(false)
 let toastText = ref('')
@@ -14,7 +14,7 @@ let currentTab = ref(0);
 let username = ref('');
 let password = ref('');
 let passwordConfirm = ref('');
-let isLogin = ref(false);
+let isLogin = ref(true);
 let data = ref({});
 
 function changeTab(tab) {
@@ -41,6 +41,12 @@ async function handleSubmit() {
 	switch (data.value.code) {
 		case '20001':
 			store.userId = data.value.data.id
+			store.identity = data.value.data.identity
+			store.record = data.value.data.record
+			store.resume = data.value.data.resume
+			store.starCompany = data.value.data.starCompany.split(',')
+			store.starPositions = data.value.data.starPositions.split(',')
+
 			switch (data.value.data.identity) {
 				case '0':
 					username.value = ''

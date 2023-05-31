@@ -9,6 +9,9 @@ let buttonCount = ref(0)
 onMounted(async () => {
 	let {data: response} = await axios.get('/FinalTerm/getCompanyData.php?page=1');
 	data.value = response
+
+	// 右键收藏
+	// document.addEventListener('contextmenu', e => {if (e.target.tagName === 'TD') {e.preventDefault();console.log(e.target.parentNode.firstChild.innerText);}});
 })
 
 let currentTab = ref(0);
@@ -57,11 +60,12 @@ watch(keyWords, (keyWords) => {
 watchEffect(() => {
 	buttonCount.value = data.value.length
 })
+
+
 // let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_, i) => i))
 </script>
 
 <template>
-
 	<div class="table">
 		<!-- Tab 头部 -->
 		<div class="tabs">
@@ -85,6 +89,7 @@ watchEffect(() => {
 				<table>
 					<thead>
 					<tr>
+						<th v-if='store.userId>0'>收藏</th>
 						<th>编号</th>
 						<th>所属行业</th>
 						<th>名称</th>
@@ -97,6 +102,7 @@ watchEffect(() => {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="index">
+						<td v-if='store.userId>0'><input type="checkbox" :checked="store.starCompany.includes(item.id)"></td>
 						<td style="text-align: center;">{{ item.id }}</td>
 						<td>{{ item.industry }}</td>
 						<td>{{ item.name }}</td>
@@ -113,25 +119,29 @@ watchEffect(() => {
 				<table>
 					<thead>
 					<tr>
+						<th v-if='store.userId>0' style="width: 2em">收藏</th>
+						<th v-if='store.userId>0' style="width: 2em">应聘</th>
 						<th style="width: 2em">编号</th>
 						<th style="width: 8em">名称</th>
 						<th style="width: 2em">人数</th>
-						<th style="width: 7em">发布时间</th>
+						<th style="width: 6em">发布时间</th>
 						<th>任职要求</th>
 						<th>待遇</th>
-						<th style="width: 4em">是否补助</th>
+						<th style="width: 2em">补助</th>
 						<th style="width: 7em">联系方式</th>
 					</tr>
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="index">
+						<td v-if='store.userId>0'><input type="checkbox" :checked="store.starCompany.includes(item.id)"></td>
+						<td v-if='store.userId>0'><input type="checkbox" :checked="store.record.includes(item.id)"></td>
 						<td style="text-align: center;">
 							{{ item.id }}
 						</td>
 						<td>{{ item.name }}</td>
 						<td>{{ item.number_of_people }}</td>
 						<td>{{ item.release_time }}</td>
-						<td style="font-size: 0.8rem">{{ item.job_requirements }}</td>
+						<td style="font-size: 0.75rem">{{ item.job_requirements }}</td>
 						<td style="text-align: right;">
 							{{ item.salary }}
 						</td>
@@ -177,6 +187,7 @@ watchEffect(() => {
 			</div>
 		</div>
 
+		<!--todo 按钮完善-->
 		<div v-show="data.length>9" class="page-button">
 			<ul>
 				<li v-for="index in 5" :key="index">
@@ -190,6 +201,19 @@ watchEffect(() => {
 </template>
 
 <style lang="scss" scoped>
+//.rightMenu {
+//	width: 80px;
+//	height: 40px;
+//	position: fixed;
+//	display: flex;
+//	align-items: center;
+//	justify-content: center;
+//	border: 1px solid #000;
+//	border-radius: 10px;
+//	cursor: pointer;
+//	z-index: 10;
+//}
+
 input {
 	margin-right: 10px;
 }
@@ -215,7 +239,6 @@ input {
 .tabs {
 	display: flex;
 	align-items: center;
-
 
 
 	button {
