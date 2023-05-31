@@ -4,12 +4,8 @@ import axios from "../api/axios";
 import {useCounterStore} from '../stores'
 
 const store = useCounterStore()
+const {POST_CONFIG:config} = store
 let resumeText = ref('')
-const config = {
-	headers: {
-		'Content-Type': 'application/x-www-form-urlencoded',
-	},
-};
 
 onMounted(async () => {
 	let {data: response} = await axios.get(`/FinalTerm/getResume.php?id=${store.userId}`)

@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import {computed, onMounted, reactive, ref, watch, watchEffect} from "vue";
+import {computed, onMounted, ref, watch, watchEffect} from "vue";
 import axios from '../api/axios';
+import {useCounterStore} from '../stores'
 
+const store = useCounterStore()
 let data = ref([])
 let buttonCount = ref(0)
 onMounted(async () => {
@@ -19,6 +21,7 @@ function changeTab(tab) {
 function changePage(page) {
 	currentPage.value = page;
 }
+
 const categories = {
 	0: 'getCompanyData',
 	1: 'getPositionsData',
@@ -54,7 +57,7 @@ watch(keyWords, (keyWords) => {
 watchEffect(() => {
 	buttonCount.value = data.value.length
 })
-let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_, i) => i))
+// let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_, i) => i))
 </script>
 
 <template>
@@ -132,7 +135,11 @@ let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_
 						<td style="text-align: right;">
 							{{ item.salary }}
 						</td>
-						<td>{{ item.subsidy }}</td>
+						<td>
+							<input :checked="item.subsidy==='1'"
+							       disabled
+							       type="checkbox">
+						</td>
 						<td style="text-align: right;">
 							{{ item.contact }}
 						</td>
@@ -192,6 +199,7 @@ input {
 
 	ul {
 		padding-left: 0;
+
 		li {
 			margin: 0 10px;
 			display: inline-block;
@@ -207,6 +215,8 @@ input {
 .tabs {
 	display: flex;
 	align-items: center;
+
+
 
 	button {
 		display: inline-block;

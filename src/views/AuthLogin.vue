@@ -6,6 +6,7 @@ import {useRouter} from 'vue-router'
 import {useCounterStore} from '../stores'
 
 const store = useCounterStore()
+const {POST_CONFIG:config} = store
 const router = useRouter()
 const showModal = ref(false)
 let toastText = ref('')
@@ -15,11 +16,6 @@ let password = ref('');
 let passwordConfirm = ref('');
 let isLogin = ref(false);
 let data = ref({});
-const config = {
-	headers: {
-		'Content-Type': 'application/x-www-form-urlencoded',
-	},
-};
 
 function changeTab(tab) {
 	currentTab.value = tab;
