@@ -18,13 +18,20 @@ onMounted(async () => {
 	dataPositions.value = response2
 })
 watchEffect(async () => {
-	if (resumeText.value&&store.userInfo.identity==='0') {
+	if (resumeText.value && store.userInfo.identity === '0') {
 		await axios.post(`/FinalTerm/setResume.php`, {
 			id: store.userId,
 			resume: resumeText.value
 		}, config)
 	}
 })
+document.addEventListener('click', e => {
+	if (e.target.tagName === 'TD') {
+		e.preventDefault();
+		console.log(e.target.parentNode.children[1].innerText);
+		console.log(e.target.parentNode.children[1].className);
+	}
+});
 </script>
 
 <template>
@@ -37,7 +44,8 @@ watchEffect(async () => {
 				<table>
 					<thead>
 					<tr>
-						<th v-if='store.userId>0'>收藏</th>
+						<th v-if='store.userId>0' style="width: 2em">收藏</th>
+						<th style="width: 2em">编号</th>
 						<th style="width: 3em">行业</th>
 						<th>名称</th>
 						<th>地址</th>
@@ -48,7 +56,9 @@ watchEffect(async () => {
 					<tbody>
 					<tr v-for="(item, index) in dataCompany" :key="index">
 						<template v-if="store.userInfo.starCompany.includes(item.id)">
-							<td v-if='store.userId>0'><input :checked="store.userInfo.starCompany.includes(item.id)" type="checkbox"></td>
+							<td v-if='store.userId>0'><input :checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
+							</td>
+							<td class="company">{{ item.id }}</td>
 							<td>{{ item.industry }}</td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.address }}</td>
@@ -64,6 +74,7 @@ watchEffect(async () => {
 					<thead>
 					<tr>
 						<th v-if='store.userId>0' style="width: 2em">收藏</th>
+						<th style="width: 2em">编号</th>
 						<th style="width: 8em">名称</th>
 						<th style="width: 2em">人数</th>
 						<th>任职要求</th>
@@ -74,7 +85,9 @@ watchEffect(async () => {
 					<tbody>
 					<tr v-for="(item, index) in dataPositions" :key="index">
 						<template v-if="store.userInfo.starPositions.includes(item.id)">
-							<td v-if='store.userId>0'><input :checked="store.userInfo.starPositions.includes(item.id)" type="checkbox"></td>
+							<td v-if='store.userId>0'><input :checked="store.userInfo.starPositions.includes(item.id)"
+							                                 type="checkbox"></td>
+							<td class="positions">{{ item.id }}</td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.number_of_people }}</td>
 							<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
@@ -97,6 +110,7 @@ watchEffect(async () => {
 					<thead>
 					<tr>
 						<th v-if='store.userId>0' style="width: 2em">应聘</th>
+						<th style="width: 2em">编号</th>
 						<th style="width: 8em">名称</th>
 						<th style="width: 2em">人数</th>
 						<th>任职要求</th>
@@ -108,6 +122,7 @@ watchEffect(async () => {
 					<tr v-for="(item, index) in dataPositions" :key="index">
 						<template v-if="store.userInfo.record.includes(item.id)">
 							<td v-if='store.userId>0'><input :checked="store.userInfo.record.includes(item.id)" type="checkbox"></td>
+							<td class="record">{{ item.id }}</td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.number_of_people }}</td>
 							<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
@@ -145,7 +160,7 @@ h1 {
 
 .container {
 	display: flex;
-	margin: 5vh auto ;
+	margin: 5vh auto;
 	width: 80vw;
 	box-sizing: border-box;
 
@@ -174,7 +189,7 @@ h1 {
 		textarea {
 			margin-left: 1.5vw;
 			width: 90%;
-			height: 80vh;
+			min-height: 80vh;
 		}
 	}
 }

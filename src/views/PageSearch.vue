@@ -10,8 +10,6 @@ onMounted(async () => {
 	let {data: response} = await axios.get('/FinalTerm/getCompanyData.php?page=1');
 	data.value = response
 	store.infoData = data.value
-	// 右键收藏
-	// document.addEventListener('contextmenu', e => {if (e.target.tagName === 'TD') {e.preventDefault();console.log(e.target.parentNode.firstChild.innerText);}});
 })
 
 let currentTab = ref(0);
