@@ -24,7 +24,11 @@ let responseData = reactive({
 })
 let headText = ''
 let bodyText = ''
-
+let data = ref([])
+onMounted(async () => {
+	let {data: response} = await axios.get('/FinalTerm/getTalentsData.php');
+	data.value = response
+})
 async function handleSubmit() {
 	if (!formData.name || !formData.require || !formData.tel || !formData.salary) {
 		headText = '发布内容不能有空项'
@@ -70,9 +74,34 @@ async function handleSubmit() {
 		<div class="left border">
 			<div class="record">
 				<h3>&emsp;应聘者记录：</h3>
-				<ul>
-					<li></li>
-				</ul>
+				<table>
+					<thead>
+					<tr>
+						<th style="width: 2em">删除</th>
+						<th style="width: 2em">姓名</th>
+						<th>求职类型</th>
+						<th style="width: 2em">年龄</th>
+						<th style="width: 3em">籍贯</th>
+						<th style="width: 2em">学历</th>
+						<th>简历</th>
+						<th>联系方式</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr v-for="(item, index) in data" :key="index">
+						<template v-if="store.record.includes(item.id)">
+							<td style="text-align: center"><input type="checkbox"></td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.job_type }}</td>
+							<td>{{ item.age }}</td>
+							<td>{{ item.native_place }}</td>
+							<td style="text-align: right;">{{ item.education }}</td>
+							<td>{{ item.resume }}</td>
+							<td style="text-align: right;">{{ item.contact }}</td>
+						</template>
+					</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 		<div class="pub ">
@@ -154,23 +183,104 @@ h1 {
 
 .container {
 	display: flex;
-	margin: 0 auto;
+	margin:  5vh auto;
 	width: 80vw;
-	height: 70vh;
+	height: auto;
 	box-sizing: border-box;
 
 	.left {
-		width: 50%;
+		width: 75%;
+		table{
+			width: 95%;
+			margin: 0 auto  3vh;
+		}
 	}
 
 	.pub {
-		width: 50%;
+		position: sticky;
+		top: 1vh;
+		width: 25%;
 		height: 100%;
-		margin: 2vh 6vw;
+		margin: 2vh 3vw;
 
 		h1 {
 
 		}
 	}
+}
+
+
+.tabs {
+	display: flex;
+	align-items: center;
+
+
+	button {
+		display: inline-block;
+		margin-right: 15px;
+		width: 70px;
+		height: 40px;
+		cursor: pointer;
+		text-align: center;
+	}
+}
+
+.active {
+	color: blue;
+}
+
+.table {
+	width: 90vw;
+	margin: 0 auto;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+tr {
+	&:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+}
+
+#links {
+	text-align: center;
+	margin-top: 20px;
+
+	a {
+		&:hover {
+			background-color: #ddd;
+		}
+	}
+
+	span {
+		background-color: #ddd;
+		color: #333;
+		border: 1px solid #ddd;
+	}
+}
+
+#links a, #links span {
+	display: inline-block;
+	padding: 5px 5px;
+	margin-right: 5px;
+	color: #333;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	text-decoration: none;
 }
 </style>

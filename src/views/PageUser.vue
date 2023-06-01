@@ -4,18 +4,26 @@ import axios from "../api/axios";
 import {useCounterStore} from '../stores'
 
 const store = useCounterStore()
-const {POST_CONFIG:config} = store
+const {POST_CONFIG: config} = store
 let resumeText = ref('')
+let dataCompany = ref({})
+let dataPositions = ref({})
 
 onMounted(async () => {
 	let {data: response} = await axios.get(`/FinalTerm/getResume.php?id=${store.userId}`)
 	resumeText.value = response
+	let {data: response1} = await axios.get(`/FinalTerm/getCompanyData.php`)
+	dataCompany.value = response1
+	let {data: response2} = await axios.get(`/FinalTerm/getPositionsData.php`)
+	dataPositions.value = response2
 })
 watchEffect(async () => {
-	await axios.post(`/FinalTerm/setResume.php`, {
-		id: store.userId,
-		resume: resumeText.value
-	}, config)
+	if (resumeText.value&&store.identity==='0') {
+		await axios.post(`/FinalTerm/setResume.php`, {
+			id: store.userId,
+			resume: resumeText.value
+		}, config)
+	}
 })
 </script>
 
@@ -25,15 +33,96 @@ watchEffect(async () => {
 		<div class="left border">
 			<div class="star border">
 				<h3>&emsp;我的收藏：</h3>
-				<ul>
-					<li></li>
-				</ul>
+				<h4>&emsp;&emsp;公司：</h4>
+				<table>
+					<thead>
+					<tr>
+						<th v-if='store.userId>0'>收藏</th>
+						<th style="width: 3em">行业</th>
+						<th>名称</th>
+						<th>地址</th>
+						<th>介绍</th>
+						<th>联系</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr v-for="(item, index) in dataCompany" :key="index">
+						<template v-if="store.starCompany.includes(item.id)">
+							<td v-if='store.userId>0'><input :checked="store.starCompany.includes(item.id)" type="checkbox"></td>
+							<td>{{ item.industry }}</td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.address }}</td>
+							<td>{{ item.other_info }}</td>
+							<td style="text-align: right;">{{ item.contact }}</td>
+						</template>
+					</tr>
+					</tbody>
+				</table>
+				<br>
+				<h4 style="margin-top: -5vh;">&emsp;&emsp;职位：</h4>
+				<table>
+					<thead>
+					<tr>
+						<th v-if='store.userId>0' style="width: 2em">收藏</th>
+						<th style="width: 8em">名称</th>
+						<th style="width: 2em">人数</th>
+						<th>任职要求</th>
+						<th>待遇</th>
+						<th style="width: 2em">补助</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr v-for="(item, index) in dataPositions" :key="index">
+						<template v-if="store.starCompany.includes(item.id)">
+							<td v-if='store.userId>0'><input :checked="store.starCompany.includes(item.id)" type="checkbox"></td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.number_of_people }}</td>
+							<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
+							<td style="text-align: right;">
+								{{ item.salary }}
+							</td>
+							<td>
+								<input :checked="item.subsidy==='1'"
+								       disabled
+								       type="checkbox">
+							</td>
+						</template>
+					</tr>
+					</tbody>
+				</table>
 			</div>
 			<div class="record border">
 				<h3>&emsp;应聘记录：</h3>
-				<ul>
-					<li></li>
-				</ul>
+				<table>
+					<thead>
+					<tr>
+						<th v-if='store.userId>0' style="width: 2em">应聘</th>
+						<th style="width: 8em">名称</th>
+						<th style="width: 2em">人数</th>
+						<th>任职要求</th>
+						<th>待遇</th>
+						<th style="width: 2em">补助</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr v-for="(item, index) in dataPositions" :key="index">
+						<template v-if="store.record.includes(item.id)">
+							<td v-if='store.userId>0'><input :checked="store.record.includes(item.id)" type="checkbox"></td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.number_of_people }}</td>
+							<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
+							<td style="text-align: right;">
+								{{ item.salary }}
+							</td>
+							<td>
+								<input :checked="item.subsidy==='1'"
+								       disabled
+								       type="checkbox">
+							</td>
+						</template>
+					</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 		<div class="resume ">
@@ -56,32 +145,112 @@ h1 {
 
 .container {
 	display: flex;
-	margin: 0 auto;
+	margin: 5vh auto ;
 	width: 80vw;
-	height: 70vh;
 	box-sizing: border-box;
 
 	.left {
-		width: 40%;
+		width: 60%;
+
+		table {
+			width: 90%;
+			margin: 0 auto 5vh;
+			overflow-y: scroll;
+		}
 
 		.star {
-			height: 60%;
 		}
 
 		.record {
-			height: 39.5%;
 		}
 	}
 
 	.resume {
-		width: 60%;
+		position: sticky;
+		top: 0;
+		width: 40%;
 		height: 100%;
 
 		textarea {
-			margin-left: 2vw;
-			width: 92%;
-			height: 80%;
+			margin-left: 1.5vw;
+			width: 90%;
+			height: 80vh;
 		}
 	}
+}
+
+
+.tabs {
+	display: flex;
+	align-items: center;
+
+
+	button {
+		display: inline-block;
+		margin-right: 15px;
+		width: 70px;
+		height: 40px;
+		cursor: pointer;
+		text-align: center;
+	}
+}
+
+.active {
+	color: blue;
+}
+
+.table {
+	width: 90vw;
+	margin: 0 auto;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+tr {
+	&:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+}
+
+#links {
+	text-align: center;
+	margin-top: 20px;
+
+	a {
+		&:hover {
+			background-color: #ddd;
+		}
+	}
+
+	span {
+		background-color: #ddd;
+		color: #333;
+		border: 1px solid #ddd;
+	}
+}
+
+#links a, #links span {
+	display: inline-block;
+	padding: 5px 5px;
+	margin-right: 5px;
+	color: #333;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	text-decoration: none;
 }
 </style>

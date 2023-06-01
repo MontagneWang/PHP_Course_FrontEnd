@@ -40,6 +40,7 @@ async function handleSubmit() {
 	data.value = response
 	switch (data.value.code) {
 		case '20001':
+			// todo 虽然能用，但应该是 store.userInfo.identity
 			store.userId = data.value.data.id
 			store.identity = data.value.data.identity
 			store.record = data.value.data.record

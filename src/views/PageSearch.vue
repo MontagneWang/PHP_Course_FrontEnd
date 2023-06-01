@@ -9,7 +9,7 @@ let buttonCount = ref(0)
 onMounted(async () => {
 	let {data: response} = await axios.get('/FinalTerm/getCompanyData.php?page=1');
 	data.value = response
-
+	store.infoData = data.value
 	// 右键收藏
 	// document.addEventListener('contextmenu', e => {if (e.target.tagName === 'TD') {e.preventDefault();console.log(e.target.parentNode.firstChild.innerText);}});
 })
@@ -33,6 +33,7 @@ const categories = {
 watchEffect(async () => {
 	let {data: response} = await axios.get(`/FinalTerm/${categories[currentTab.value]}.php?page=${currentPage.value}`);
 	data.value = response
+	store.infoData = data.value
 })
 // 类别改动时，将 currentPage 重置为 1
 watch(currentTab, () => {
@@ -57,10 +58,9 @@ async function sendKeyWords(keyWords) {
 watch(keyWords, (keyWords) => {
 	sendKeyWords(keyWords)
 })
-watchEffect(() => {
-	buttonCount.value = data.value.length
-})
-
+// watchEffect(() => {
+// 	buttonCount.value = data.value.length
+// })
 
 // let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_, i) => i))
 </script>
@@ -141,7 +141,7 @@ watchEffect(() => {
 						<td>{{ item.name }}</td>
 						<td>{{ item.number_of_people }}</td>
 						<td>{{ item.release_time }}</td>
-						<td style="font-size: 0.75rem">{{ item.job_requirements }}</td>
+						<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
 						<td style="text-align: right;">
 							{{ item.salary }}
 						</td>

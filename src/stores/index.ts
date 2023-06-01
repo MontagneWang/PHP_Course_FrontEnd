@@ -6,12 +6,14 @@ export const useCounterStore = defineStore('counter', () => {
 	let userId = ref(-1)
 	let userInfo = reactive({
 		id: "",
-		identity:	"",
+		identity: "",
 		resume: "",
 		starCompany: [],
 		starPositions: [],
 		record: "",
-})
+	})
+	let infoData = reactive({})
+
 	const count = ref(0)
 	const POST_CONFIG = ref({headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
 
@@ -21,5 +23,5 @@ export const useCounterStore = defineStore('counter', () => {
 		count.value++
 	}
 
-	return {isAlreadyLogin: LoginIdentity, count, double, POST_CONFIG, increment}
+	return {infoData, LoginIdentity,userInfo, count,userId, double, POST_CONFIG, increment}
 })
