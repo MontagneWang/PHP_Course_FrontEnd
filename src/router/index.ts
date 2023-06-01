@@ -66,16 +66,23 @@ const routes = [
 	},
 ]
 
+//@ts-ignore
 const router = VueRouter.createRouter({
 	history: VueRouter.createWebHashHistory(),
 	routes,
 })
 
 router.beforeEach((to, from, next) => {
+	//@ts-ignore
 	if (!to.meta.requireAuth || store.LoginIdentity === 2 || store.LoginIdentity === to.meta.identityAuth) {
 		next();
-	} else if (to.meta.requireAuth && store.LoginIdentity !== to.meta.identityAuth) {
-		next('/login');
+	} else if	(to.meta.requireAuth && store.LoginIdentity !== to.meta.identityAuth) {
+		next({
+			name: 'Login',
+			query : {
+				identity: to.meta.identityAuth
+			}
+		});
 	}
 });
 export default router

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import {ref, watchEffect} from "vue";
+import {computed, onMounted, ref, watchEffect} from "vue";
+import {defineProps} from 'vue';
 import axios from "../api/axios";
 import Modal from '../utils/ToastComp.vue'
 import {useRouter} from 'vue-router'
@@ -16,6 +17,10 @@ let password = ref('');
 let passwordConfirm = ref('');
 let isLogin = ref(true);
 let data = ref({});
+
+watchEffect(() => {
+	currentTab.value = Number(router.currentRoute.value.query.identity)
+})
 
 function changeTab(tab) {
 	currentTab.value = tab;
@@ -40,13 +45,12 @@ async function handleSubmit() {
 	data.value = response
 	switch (data.value.code) {
 		case '20001':
-			// todo 虽然能用，但应该是 store.userInfo.identity
 			store.userId = data.value.data.id
-			store.identity = data.value.data.identity
-			store.record = data.value.data.record
-			store.resume = data.value.data.resume
-			store.starCompany = data.value.data.starCompany.split(',')
-			store.starPositions = data.value.data.starPositions.split(',')
+			store.userInfo.identity = data.value.data.identity
+			store.userInfo.record = data.value.data.record
+			store.userInfo.resume = data.value.data.resume
+			store.userInfo.starCompany = data.value.data.starCompany.split(',')
+			store.userInfo.starPositions = data.value.data.starPositions.split(',')
 
 			switch (data.value.data.identity) {
 				case '0':

@@ -89,7 +89,7 @@ async function handleSubmit() {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="index">
-						<template v-if="store.record.includes(item.id)">
+						<template v-if="store.userInfo.record.includes(item.id)">
 							<td style="text-align: center"><input type="checkbox"></td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.job_type }}</td>
@@ -114,7 +114,6 @@ async function handleSubmit() {
 				       placeholder="请输入职位名称"
 				       required
 				       type="text"><br><br>
-				<!--fixme required 无效-->
 				<label for="peopleNum">人数：</label>
 				<input id="peopleNum"
 				       v-model="formData.peopleNum"

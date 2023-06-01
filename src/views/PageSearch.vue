@@ -102,7 +102,7 @@ watch(keyWords, (keyWords) => {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="index">
-						<td v-if='store.userId>0'><input type="checkbox" :checked="store.starCompany.includes(item.id)"></td>
+						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.starCompany.includes(item.id)"></td>
 						<td style="text-align: center;">{{ item.id }}</td>
 						<td>{{ item.industry }}</td>
 						<td>{{ item.name }}</td>
@@ -133,8 +133,8 @@ watch(keyWords, (keyWords) => {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="index">
-						<td v-if='store.userId>0'><input type="checkbox" :checked="store.starCompany.includes(item.id)"></td>
-						<td v-if='store.userId>0'><input type="checkbox" :checked="store.record.includes(item.id)"></td>
+						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.starCompany.includes(item.id)"></td>
+						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.record.includes(item.id)"></td>
 						<td style="text-align: center;">
 							{{ item.id }}
 						</td>

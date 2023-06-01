@@ -18,7 +18,7 @@ onMounted(async () => {
 	dataPositions.value = response2
 })
 watchEffect(async () => {
-	if (resumeText.value&&store.identity==='0') {
+	if (resumeText.value&&store.userInfo.identity==='0') {
 		await axios.post(`/FinalTerm/setResume.php`, {
 			id: store.userId,
 			resume: resumeText.value
@@ -47,8 +47,8 @@ watchEffect(async () => {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in dataCompany" :key="index">
-						<template v-if="store.starCompany.includes(item.id)">
-							<td v-if='store.userId>0'><input :checked="store.starCompany.includes(item.id)" type="checkbox"></td>
+						<template v-if="store.userInfo.starCompany.includes(item.id)">
+							<td v-if='store.userId>0'><input :checked="store.userInfo.starCompany.includes(item.id)" type="checkbox"></td>
 							<td>{{ item.industry }}</td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.address }}</td>
@@ -73,8 +73,8 @@ watchEffect(async () => {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in dataPositions" :key="index">
-						<template v-if="store.starCompany.includes(item.id)">
-							<td v-if='store.userId>0'><input :checked="store.starCompany.includes(item.id)" type="checkbox"></td>
+						<template v-if="store.userInfo.starPositions.includes(item.id)">
+							<td v-if='store.userId>0'><input :checked="store.userInfo.starPositions.includes(item.id)" type="checkbox"></td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.number_of_people }}</td>
 							<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
@@ -106,8 +106,8 @@ watchEffect(async () => {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in dataPositions" :key="index">
-						<template v-if="store.record.includes(item.id)">
-							<td v-if='store.userId>0'><input :checked="store.record.includes(item.id)" type="checkbox"></td>
+						<template v-if="store.userInfo.record.includes(item.id)">
+							<td v-if='store.userId>0'><input :checked="store.userInfo.record.includes(item.id)" type="checkbox"></td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.number_of_people }}</td>
 							<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
