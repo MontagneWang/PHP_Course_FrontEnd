@@ -88,7 +88,7 @@ async function handleSubmit() {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in data" :key="index">
+					<tr v-for="(item, index) in data" :key="item.id ">
 						<template v-if="store.userInfo.record.includes(item.id)">
 							<td style="text-align: center"><input type="checkbox"></td>
 							<td>{{ item.name }}</td>

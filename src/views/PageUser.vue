@@ -25,13 +25,26 @@ watchEffect(async () => {
 		}, config)
 	}
 })
-document.addEventListener('click', e => {
-	if (e.target.tagName === 'TD') {
-		e.preventDefault();
-		console.log(e.target.parentNode.children[1].innerText);
-		console.log(e.target.parentNode.children[1].className);
+
+
+// document.addEventListener('click', e => {
+// 	if (e.target.tagName === 'TD') {
+// 		e.preventDefault();
+// 		console.log(e.target.parentNode.children[1].innerText);
+// 		console.log(e.target.parentNode.children[1].className);
+// 	}
+// });
+
+async function onCheckboxChanged(event) {
+	if (event.target.type === 'checkbox') {
+		await axios.post(`/FinalTerm/setUserStar.php`, {
+			id: store.userId,
+			deleteId: event.target.parentNode.parentNode.children[1].innerText,
+			cate: event.target.parentNode.parentNode.children[1].className,
+			// isChecked: event.target.checked
+		}, config)
 	}
-});
+}
 </script>
 
 <template>
@@ -41,7 +54,7 @@ document.addEventListener('click', e => {
 			<div class="star border">
 				<h3>&emsp;我的收藏：</h3>
 				<h4>&emsp;&emsp;公司：</h4>
-				<table>
+				<table @change="onCheckboxChanged">
 					<thead>
 					<tr>
 						<th v-if='store.userId>0' style="width: 2em">收藏</th>
@@ -54,7 +67,7 @@ document.addEventListener('click', e => {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in dataCompany" :key="index">
+					<tr v-for="(item, index) in dataCompany" :key="item.id ">
 						<template v-if="store.userInfo.starCompany.includes(item.id)">
 							<td v-if='store.userId>0'><input :checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
 							</td>
@@ -70,7 +83,7 @@ document.addEventListener('click', e => {
 				</table>
 				<br>
 				<h4 style="margin-top: -5vh;">&emsp;&emsp;职位：</h4>
-				<table>
+				<table @change="onCheckboxChanged">
 					<thead>
 					<tr>
 						<th v-if='store.userId>0' style="width: 2em">收藏</th>
@@ -83,7 +96,7 @@ document.addEventListener('click', e => {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in dataPositions" :key="index">
+					<tr v-for="(item, index) in dataPositions" :key="item.id ">
 						<template v-if="store.userInfo.starPositions.includes(item.id)">
 							<td v-if='store.userId>0'><input :checked="store.userInfo.starPositions.includes(item.id)"
 							                                 type="checkbox"></td>
@@ -119,9 +132,9 @@ document.addEventListener('click', e => {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in dataPositions" :key="index">
+					<tr v-for="(item, index) in dataPositions" :key="item.id ">
 						<template v-if="store.userInfo.record.includes(item.id)">
-							<td v-if='store.userId>0'><input :checked="store.userInfo.record.includes(item.id)" type="checkbox"></td>
+							<td v-if='store.userId>0'><input disabled :checked="store.userInfo.record.includes(item.id)" type="checkbox"></td>
 							<td class="record">{{ item.id }}</td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.number_of_people }}</td>

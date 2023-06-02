@@ -4,6 +4,7 @@ import axios from '../api/axios';
 import {useCounterStore} from '../stores'
 
 const store = useCounterStore()
+const {POST_CONFIG:config} = store
 let data = ref([])
 let buttonCount = ref(0)
 onMounted(async () => {
@@ -61,6 +62,16 @@ watch(keyWords, (keyWords) => {
 // })
 
 // let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_, i) => i))
+async function onCheckboxChanged(event) {
+	if (event.target.type === 'checkbox' && store.userId>0) {
+		await axios.post(`/FinalTerm/setUserStar.php`, {
+			id: store.userId,
+			deleteId: event.target.parentNode.parentNode.children[0].innerText,
+			cate: event.target.parentNode.parentNode.children[0].className,
+			// isChecked: event.target.checked
+		}, config)
+	}
+}
 </script>
 
 <template>
@@ -84,7 +95,7 @@ watch(keyWords, (keyWords) => {
 		<!-- Tab 内容 -->
 		<div class="tab-content">
 			<div v-show="currentTab === 0">
-				<table>
+				<table @change="onCheckboxChanged">
 					<thead>
 					<tr>
 						<th v-if='store.userId>0'>收藏</th>
@@ -99,9 +110,9 @@ watch(keyWords, (keyWords) => {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in data" :key="index">
+					<tr v-for="(item, index) in data" :key="item.id">
+						<td class="company" style="text-align: center;">{{ item.id }}</td>
 						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.starCompany.includes(item.id)"></td>
-						<td style="text-align: center;">{{ item.id }}</td>
 						<td>{{ item.industry }}</td>
 						<td>{{ item.name }}</td>
 						<td>{{ item.address }}</td>
@@ -114,12 +125,12 @@ watch(keyWords, (keyWords) => {
 				</table>
 			</div>
 			<div v-show="currentTab === 1">
-				<table>
+				<table @change="onCheckboxChanged">
 					<thead>
 					<tr>
+						<th style="width: 2em">编号</th>
 						<th v-if='store.userId>0' style="width: 2em">收藏</th>
 						<th v-if='store.userId>0' style="width: 2em">应聘</th>
-						<th style="width: 2em">编号</th>
 						<th style="width: 8em">名称</th>
 						<th style="width: 2em">人数</th>
 						<th style="width: 6em">发布时间</th>
@@ -130,12 +141,12 @@ watch(keyWords, (keyWords) => {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in data" :key="index">
-						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.starCompany.includes(item.id)"></td>
-						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.record.includes(item.id)"></td>
-						<td style="text-align: center;">
+					<tr v-for="(item, index) in data" :key="item.id">
+						<td class="positions" style="text-align: center;">
 							{{ item.id }}
 						</td>
+						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.starPositions.includes(item.id)"></td>
+						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.record.includes(item.id)"></td>
 						<td>{{ item.name }}</td>
 						<td>{{ item.number_of_people }}</td>
 						<td>{{ item.release_time }}</td>
@@ -157,7 +168,7 @@ watch(keyWords, (keyWords) => {
 			</div>
 			<div v-show="currentTab === 2">
 				<table>
-					<thead>
+					<thead >
 					<tr>
 						<th style="width: 2em">编号</th>
 						<th>姓名</th>
@@ -170,7 +181,7 @@ watch(keyWords, (keyWords) => {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in data" :key="index">
+					<tr v-for="(item, index) in data" :key="item.id ">
 						<td style="text-align: center;">{{ item.id }}</td>
 						<td>{{ item.name }}</td>
 						<td>{{ item.job_type }}</td>

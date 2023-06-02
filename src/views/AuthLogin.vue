@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {computed, onMounted, ref, watchEffect} from "vue";
-import {defineProps} from 'vue';
 import axios from "../api/axios";
 import Modal from '../utils/ToastComp.vue'
 import {useRouter} from 'vue-router'
