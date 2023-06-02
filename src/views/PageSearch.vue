@@ -106,7 +106,7 @@ async function onCheckboxChanged(event) {
 					<thead>
 					<tr>
 						<th>编号</th>
-						<th v-if='store.userId>0'>收藏</th>
+						<th v-if='store.userId>0&&store.userInfo.identity==="0"'>收藏</th>
 						<th>所属行业</th>
 						<th>名称</th>
 						<th>地址</th>
@@ -119,7 +119,7 @@ async function onCheckboxChanged(event) {
 					<tbody>
 					<tr v-for="(item, index) in data" :key="item.id">
 						<td class="company" style="text-align: center;">{{ item.id }}</td>
-						<td v-if='store.userId>0'><input :checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
+						<td v-if='store.userId>0&&store.userInfo.identity==="0"'><input :checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
 						</td>
 						<td>{{ item.industry }}</td>
 						<td>{{ item.name }}</td>
@@ -137,7 +137,7 @@ async function onCheckboxChanged(event) {
 					<thead>
 					<tr>
 						<th style="width: 2em">编号</th>
-						<th  v-if='store.userId>0' style="width: 3em">
+						<th  v-if='store.userId>0&&store.userInfo.identity==="0"' style="width: 3em">
 							<button @click="positionsOrRecord=!positionsOrRecord">{{ positionsOrRecord?'收藏':'应聘' }}</button>
 						</th>
 						<th style="width: 8em">名称</th>
@@ -154,11 +154,11 @@ async function onCheckboxChanged(event) {
 						<td :class="positionsOrRecord?'positions':'record'" style="text-align: center;">
 							{{ item.id }}
 						</td>
-						<td v-if='store.userId>0&&positionsOrRecord' class="positions">
+						<td v-if='store.userId>0&&positionsOrRecord&&store.userInfo.identity==="0"' class="positions">
 							<input :checked="store.userInfo.starPositions.includes(item.id)"
 							       type="checkbox">
 						</td>
-						<td v-if='store.userId>0&&!positionsOrRecord' class="record">
+						<td v-if='store.userId>0&&!positionsOrRecord&&store.userInfo.identity==="0"' class="record">
 							<input :checked="store.userInfo.record.includes(item.id)"
 							       type="checkbox">
 						</td>

@@ -36,8 +36,6 @@ watchEffect(async () => {
 // });
 
 async function onCheckboxChanged(event) {
-	console.log(event.target.parentNode.parentNode.children[1].innerText)
-	console.log(event.target.parentNode.parentNode.children[1].className)
 	if (event.target.type === 'checkbox') {
 		await axios.post(`/FinalTerm/setUserStar.php`, {
 			id: store.userId,

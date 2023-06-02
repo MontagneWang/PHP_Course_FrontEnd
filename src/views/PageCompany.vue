@@ -54,6 +54,19 @@ async function handleSubmit() {
 	}
 }
 
+async function onCheckboxChanged(event) {
+	console.log(event.target.parentNode.parentNode.children[1].innerText)
+	console.log(event.target.parentNode.parentNode.children[1].className)
+	if (event.target.type === 'checkbox') {
+		await axios.post(`/FinalTerm/setUserStar.php`, {
+			id: store.userId,
+			// 当前选中的 id
+			deleteId: event.target.parentNode.parentNode.children[1].innerText,
+			// 当前选中的分类
+			cate: event.target.parentNode.parentNode.children[1].className,
+		}, config)
+	}
+}
 </script>
 
 <template>
@@ -74,10 +87,11 @@ async function handleSubmit() {
 		<div class="left border">
 			<div class="record">
 				<h3>&emsp;应聘者记录：</h3>
-				<table>
+				<table @change="onCheckboxChanged">
 					<thead>
 					<tr>
 						<th style="width: 2em">删除</th>
+						<th style="width: 2em">编号</th>
 						<th style="width: 2em">姓名</th>
 						<th>求职类型</th>
 						<th style="width: 2em">年龄</th>
@@ -88,9 +102,10 @@ async function handleSubmit() {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in data" :key="item.id ">
+					<tr v-for="item in data" :key="item.id ">
 						<template v-if="store.userInfo.record.includes(item.id)">
 							<td style="text-align: center"><input type="checkbox"></td>
+							<td class="record">{{ item.id }}</td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.job_type }}</td>
 							<td>{{ item.age }}</td>
