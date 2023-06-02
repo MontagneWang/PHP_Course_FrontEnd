@@ -11,6 +11,7 @@ export const useCounterStore = defineStore('counter', () => {
 		starCompany: [],
 		starPositions: [],
 		record: "",
+		auditStatus:'0'
 	})
 	let infoData = reactive({})
 

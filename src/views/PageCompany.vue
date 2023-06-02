@@ -82,7 +82,11 @@ async function onCheckboxChanged(event) {
 		</modal>
 	</Teleport>
 
-	<h1>企业信息</h1>
+	<h1>企业信息&emsp;
+		<span class="audit"
+		      :class="store.userInfo.auditStatus!=='0'?'success':'pending'">
+			{{store.userInfo.auditStatus!=='0'?'已审核':'待审核'}}
+		</span></h1>
 	<div class="container border">
 		<div class="left border">
 			<div class="record">
@@ -186,6 +190,20 @@ async function onCheckboxChanged(event) {
 </template>
 
 <style lang="scss" scoped>
+.audit{
+	border-radius: 15px;
+	padding: 10px 15px;
+	font-size: 1.5rem;
+	&.success{
+		border:3px solid #7FFF00;
+		color: #66ccff;
+	}
+	&.pending{
+		border:3px solid #f6b83f;
+		color: #f54200;
+	}
+}
+
 .border {
 	border: 1px #000 solid;
 }

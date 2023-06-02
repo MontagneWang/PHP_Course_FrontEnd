@@ -36,7 +36,7 @@ watchEffect(async () => {
 })
 let positionsOrRecord = ref(true)
 watchEffect(async () => {
-	let {data: response} = await axios.get(`/FinalTerm/getUserData.php?id=${store.userId}&cate=${positionsOrRecord.value?'starPositions':'record'}`);
+	let {data: response} = await axios.get(`/FinalTerm/getUserData.php?id=${store.userId}&cate=${positionsOrRecord.value ? 'starPositions' : 'record'}`);
 	let key = Object.getOwnPropertyNames(response)
 	store.userInfo[key] = response[key]
 })
@@ -119,7 +119,8 @@ async function onCheckboxChanged(event) {
 					<tbody>
 					<tr v-for="(item, index) in data" :key="item.id">
 						<td class="company" style="text-align: center;">{{ item.id }}</td>
-						<td v-if='store.userId>0&&store.userInfo.identity==="0"'><input :checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
+						<td v-if='store.userId>0&&store.userInfo.identity==="0"'><input
+								:checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
 						</td>
 						<td>{{ item.industry }}</td>
 						<td>{{ item.name }}</td>
@@ -137,8 +138,8 @@ async function onCheckboxChanged(event) {
 					<thead>
 					<tr>
 						<th style="width: 2em">编号</th>
-						<th  v-if='store.userId>0&&store.userInfo.identity==="0"' style="width: 3em">
-							<button @click="positionsOrRecord=!positionsOrRecord">{{ positionsOrRecord?'收藏':'应聘' }}</button>
+						<th v-if='store.userId>0&&store.userInfo.identity==="0"' style="width: 3em">
+							<button @click="positionsOrRecord=!positionsOrRecord">{{ positionsOrRecord ? '收藏' : '应聘' }}</button>
 						</th>
 						<th style="width: 8em">名称</th>
 						<th style="width: 2em">人数</th>
@@ -150,33 +151,35 @@ async function onCheckboxChanged(event) {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in data" :key="item.id">
-						<td :class="positionsOrRecord?'positions':'record'" style="text-align: center;">
-							{{ item.id }}
-						</td>
-						<td v-if='store.userId>0&&positionsOrRecord&&store.userInfo.identity==="0"' class="positions">
-							<input :checked="store.userInfo.starPositions.includes(item.id)"
-							       type="checkbox">
-						</td>
-						<td v-if='store.userId>0&&!positionsOrRecord&&store.userInfo.identity==="0"' class="record">
-							<input :checked="store.userInfo.record.includes(item.id)"
-							       type="checkbox">
-						</td>
-						<td>{{ item.name }}</td>
-						<td>{{ item.number_of_people }}</td>
-						<td>{{ item.release_time }}</td>
-						<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
-						<td style="text-align: right;">
-							{{ item.salary }}
-						</td>
-						<td>
-							<input :checked="item.subsidy==='1'"
-							       disabled
-							       type="checkbox">
-						</td>
-						<td style="text-align: right;">
-							{{ item.contact }}
-						</td>
+					<tr v-for="item in data" :key="item.id">
+						<template v-if="item.auditStatus!=='0'">
+							<td :class="positionsOrRecord?'positions':'record'" style="text-align: center;">
+								{{ item.id }}
+							</td>
+							<td v-if='store.userId>0&&positionsOrRecord&&store.userInfo.identity==="0"' class="positions">
+								<input :checked="store.userInfo.starPositions.includes(item.id)"
+								       type="checkbox">
+							</td>
+							<td v-if='store.userId>0&&!positionsOrRecord&&store.userInfo.identity==="0"' class="record">
+								<input :checked="store.userInfo.record.includes(item.id)"
+								       type="checkbox">
+							</td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.number_of_people }}</td>
+							<td>{{ item.release_time }}</td>
+							<td style="font-size: 0.7rem">{{ item.job_requirements }}</td>
+							<td style="text-align: right;">
+								{{ item.salary }}
+							</td>
+							<td>
+								<input :checked="item.subsidy==='1'"
+								       disabled
+								       type="checkbox">
+							</td>
+							<td style="text-align: right;">
+								{{ item.contact }}
+							</td>
+						</template>
 					</tr>
 					</tbody>
 				</table>

@@ -50,6 +50,7 @@ async function handleSubmit() {
 			store.userInfo.resume = data.value.data.resume
 			store.userInfo.starCompany = data.value.data.starCompany.split(',')
 			store.userInfo.starPositions = data.value.data.starPositions.split(',')
+			store.userInfo.auditStatus = data.value.data.auditStatus
 
 			switch (data.value.data.identity) {
 				case '0':
