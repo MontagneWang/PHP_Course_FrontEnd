@@ -36,13 +36,15 @@ watchEffect(async () => {
 // });
 
 async function onCheckboxChanged(event) {
+	console.log(event.target.parentNode.parentNode.children[1].innerText)
+	console.log(event.target.parentNode.parentNode.children[1].className)
 	if (event.target.type === 'checkbox') {
 		await axios.post(`/FinalTerm/setUserStar.php`, {
 			id: store.userId,
 			// 当前选中的 id
 			deleteId: event.target.parentNode.parentNode.children[1].innerText,
 			// 当前选中的分类
-			cate: event.target.parentNode.parentNode.children[0].className,
+			cate: event.target.parentNode.parentNode.children[1].className,
 			// isChecked: event.target.checked
 		}, config)
 	}
