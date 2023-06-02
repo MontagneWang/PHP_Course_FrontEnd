@@ -39,8 +39,10 @@ async function onCheckboxChanged(event) {
 	if (event.target.type === 'checkbox') {
 		await axios.post(`/FinalTerm/setUserStar.php`, {
 			id: store.userId,
+			// 当前选中的 id
 			deleteId: event.target.parentNode.parentNode.children[1].innerText,
-			cate: event.target.parentNode.parentNode.children[1].className,
+			// 当前选中的分类
+			cate: event.target.parentNode.parentNode.children[0].className,
 			// isChecked: event.target.checked
 		}, config)
 	}

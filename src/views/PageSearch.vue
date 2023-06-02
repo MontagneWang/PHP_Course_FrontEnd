@@ -4,7 +4,7 @@ import axios from '../api/axios';
 import {useCounterStore} from '../stores'
 
 const store = useCounterStore()
-const {POST_CONFIG:config} = store
+const {POST_CONFIG: config} = store
 let data = ref([])
 let buttonCount = ref(0)
 onMounted(async () => {
@@ -33,6 +33,12 @@ watchEffect(async () => {
 	let {data: response} = await axios.get(`/FinalTerm/${categories[currentTab.value]}.php?page=${currentPage.value}`);
 	data.value = response
 	store.infoData = data.value
+})
+let positionsOrRecord = ref(true)
+watchEffect(async () => {
+	let {data: response} = await axios.get(`/FinalTerm/getUserData.php?id=${store.userId}&cate=${positionsOrRecord.value?'starPositions':'record'}`);
+	let key = Object.getOwnPropertyNames(response)
+	store.userInfo[key] = response[key]
 })
 // 类别改动时，将 currentPage 重置为 1
 watch(currentTab, () => {
@@ -63,7 +69,7 @@ watch(keyWords, (keyWords) => {
 
 // let range = computed(() => Array.from({length: (buttonCount.value + 9) / 10}, (_, i) => i))
 async function onCheckboxChanged(event) {
-	if (event.target.type === 'checkbox' && store.userId>0) {
+	if (event.target.type === 'checkbox' && store.userId > 0) {
 		await axios.post(`/FinalTerm/setUserStar.php`, {
 			id: store.userId,
 			deleteId: event.target.parentNode.parentNode.children[0].innerText,
@@ -72,6 +78,7 @@ async function onCheckboxChanged(event) {
 		}, config)
 	}
 }
+
 </script>
 
 <template>
@@ -98,8 +105,8 @@ async function onCheckboxChanged(event) {
 				<table @change="onCheckboxChanged">
 					<thead>
 					<tr>
-						<th v-if='store.userId>0'>收藏</th>
 						<th>编号</th>
+						<th v-if='store.userId>0'>收藏</th>
 						<th>所属行业</th>
 						<th>名称</th>
 						<th>地址</th>
@@ -112,7 +119,8 @@ async function onCheckboxChanged(event) {
 					<tbody>
 					<tr v-for="(item, index) in data" :key="item.id">
 						<td class="company" style="text-align: center;">{{ item.id }}</td>
-						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.starCompany.includes(item.id)"></td>
+						<td v-if='store.userId>0'><input :checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
+						</td>
 						<td>{{ item.industry }}</td>
 						<td>{{ item.name }}</td>
 						<td>{{ item.address }}</td>
@@ -129,8 +137,9 @@ async function onCheckboxChanged(event) {
 					<thead>
 					<tr>
 						<th style="width: 2em">编号</th>
-						<th v-if='store.userId>0' style="width: 2em">收藏</th>
-						<th v-if='store.userId>0' style="width: 2em">应聘</th>
+						<th  v-if='store.userId>0' style="width: 3em">
+							<button @click="positionsOrRecord=!positionsOrRecord">{{ positionsOrRecord?'收藏':'应聘' }}</button>
+						</th>
 						<th style="width: 8em">名称</th>
 						<th style="width: 2em">人数</th>
 						<th style="width: 6em">发布时间</th>
@@ -142,11 +151,17 @@ async function onCheckboxChanged(event) {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="item.id">
-						<td class="positions" style="text-align: center;">
+						<td :class="positionsOrRecord?'positions':'record'" style="text-align: center;">
 							{{ item.id }}
 						</td>
-						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.starPositions.includes(item.id)"></td>
-						<td v-if='store.userId>0'><input type="checkbox" :checked="store.userInfo.record.includes(item.id)"></td>
+						<td v-if='store.userId>0&&positionsOrRecord' class="positions">
+							<input :checked="store.userInfo.starPositions.includes(item.id)"
+							       type="checkbox">
+						</td>
+						<td v-if='store.userId>0&&!positionsOrRecord' class="record">
+							<input :checked="store.userInfo.record.includes(item.id)"
+							       type="checkbox">
+						</td>
 						<td>{{ item.name }}</td>
 						<td>{{ item.number_of_people }}</td>
 						<td>{{ item.release_time }}</td>
@@ -168,7 +183,7 @@ async function onCheckboxChanged(event) {
 			</div>
 			<div v-show="currentTab === 2">
 				<table>
-					<thead >
+					<thead>
 					<tr>
 						<th style="width: 2em">编号</th>
 						<th>姓名</th>
@@ -181,7 +196,7 @@ async function onCheckboxChanged(event) {
 					</tr>
 					</thead>
 					<tbody>
-					<tr v-for="(item, index) in data" :key="item.id ">
+					<tr v-for="item in data" :key="item.id ">
 						<td style="text-align: center;">{{ item.id }}</td>
 						<td>{{ item.name }}</td>
 						<td>{{ item.job_type }}</td>
