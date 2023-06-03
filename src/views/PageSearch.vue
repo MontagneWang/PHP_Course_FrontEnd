@@ -118,17 +118,19 @@ async function onCheckboxChanged(event) {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="item.id">
-						<td class="company" style="text-align: center;">{{ item.id }}</td>
-						<td v-if='store.userId>0&&store.userInfo.identity==="0"'><input
-								:checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
-						</td>
-						<td>{{ item.industry }}</td>
-						<td>{{ item.name }}</td>
-						<td>{{ item.address }}</td>
-						<td>{{ item.legal_person }}</td>
-						<td style="text-align: right;">{{ item.registered_capital }}</td>
-						<td>{{ item.other_info }}</td>
-						<td style="text-align: right;">{{ item.contact }}</td>
+						<template v-if="item.auditStatus!=='0'">
+							<td class="company" style="text-align: center;">{{ item.id }}</td>
+							<td v-if='store.userId>0&&store.userInfo.identity==="0"'><input
+									:checked="store.userInfo.starCompany.includes(item.id)" type="checkbox">
+							</td>
+							<td>{{ item.industry }}</td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.address }}</td>
+							<td>{{ item.legal_person }}</td>
+							<td style="text-align: right;">{{ item.registered_capital }}</td>
+							<td>{{ item.other_info }}</td>
+							<td style="text-align: right;">{{ item.contact }}</td>
+						</template>
 					</tr>
 					</tbody>
 				</table>
@@ -200,14 +202,16 @@ async function onCheckboxChanged(event) {
 					</thead>
 					<tbody>
 					<tr v-for="item in data" :key="item.id ">
-						<td style="text-align: center;">{{ item.id }}</td>
-						<td>{{ item.name }}</td>
-						<td>{{ item.job_type }}</td>
-						<td>{{ item.age }}</td>
-						<td>{{ item.native_place }}</td>
-						<td style="text-align: right;">{{ item.education }}</td>
-						<td>{{ item.resume }}</td>
-						<td style="text-align: right;">{{ item.contact }}</td>
+						<template v-if="item.auditStatus!=='0'">
+							<td style="text-align: center;">{{ item.id }}</td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.job_type }}</td>
+							<td>{{ item.age }}</td>
+							<td>{{ item.native_place }}</td>
+							<td style="text-align: right;">{{ item.education }}</td>
+							<td>{{ item.resume }}</td>
+							<td style="text-align: right;">{{ item.contact }}</td>
+						</template>
 					</tr>
 					</tbody>
 				</table>

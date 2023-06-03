@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watchEffect} from "vue";
 import axios from "../api/axios";
 import {useCounterStore} from '../stores'
 
@@ -14,14 +14,27 @@ function changeTab(tab) {
 let data = ref([])
 
 onMounted(async () => {
-	let {data: response} = await axios.get('/FinalTerm/getPositionsAll.php');
+	let {data: response} = await axios.get('/FinalTerm/getCompanyAll.php');
 	data.value = response
 })
+
+
+const categories = {
+	0: 'getCompanyAll',
+	1: 'getPositionsAll',
+	2: 'getTalentsAll'
+};
+watchEffect(async () => {
+	let {data: response} = await axios.get(`/FinalTerm/${categories[currentTab.value]}.php`);
+	data.value = response
+	store.infoData = data.value
+})
+
 async function onCheckboxChanged(event) {
 	if (event.target.type === 'checkbox') {
-		await axios.post(`/FinalTerm/________.php`, {
-			id: store.userId,
-			auditId: event.target.parentNode.parentNode.children[0].innerText,
+		await axios.post(`/FinalTerm/setAudit.php`, {
+			auditId: event.target.parentNode.parentNode.children[1].innerText,
+			cate: event.target.parentNode.parentNode.children[1].className,
 		}, config)
 	}
 }
@@ -50,6 +63,7 @@ async function onCheckboxChanged(event) {
 				<table @change="onCheckboxChanged">
 					<thead>
 					<tr>
+						<th style="width: 2em">审核</th>
 						<th>编号</th>
 						<th>所属行业</th>
 						<th>名称</th>
@@ -62,14 +76,19 @@ async function onCheckboxChanged(event) {
 					</thead>
 					<tbody>
 					<tr v-for="(item, index) in data" :key="item.id">
-						<td class="company" style="text-align: center;">{{ item.id }}</td>
-						<td>{{ item.industry }}</td>
-						<td>{{ item.name }}</td>
-						<td>{{ item.address }}</td>
-						<td>{{ item.legal_person }}</td>
-						<td style="text-align: right;">{{ item.registered_capital }}</td>
-						<td>{{ item.other_info }}</td>
-						<td style="text-align: right;">{{ item.contact }}</td>
+						<template v-if="item.auditStatus==='0'">
+							<td><input
+									:checked="false" type="checkbox">
+							</td>
+							<td class="company" style="text-align: center;">{{ item.id }}</td>
+							<td>{{ item.industry }}</td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.address }}</td>
+							<td>{{ item.legal_person }}</td>
+							<td style="text-align: right;">{{ item.registered_capital }}</td>
+							<td>{{ item.other_info }}</td>
+							<td style="text-align: right;">{{ item.contact }}</td>
+						</template>
 					</tr>
 					</tbody>
 				</table>
@@ -95,7 +114,7 @@ async function onCheckboxChanged(event) {
 							<td><input
 									:checked="false" type="checkbox">
 							</td>
-							<td>{{ item.id }}</td>
+							<td class="positions" >{{ item.id }}</td>
 							<td>{{ item.name }}</td>
 							<td>{{ item.number_of_people }}</td>
 							<td>{{ item.release_time }}</td>
@@ -117,9 +136,10 @@ async function onCheckboxChanged(event) {
 				</table>
 			</div>
 			<div v-show="currentTab === 2">
-				<table>
+				<table @change="onCheckboxChanged">
 					<thead>
 					<tr>
+						<th style="width: 2em">审核</th>
 						<th style="width: 2em">编号</th>
 						<th>姓名</th>
 						<th>求职类型</th>
@@ -132,14 +152,19 @@ async function onCheckboxChanged(event) {
 					</thead>
 					<tbody>
 					<tr v-for="item in data" :key="item.id ">
-						<td style="text-align: center;">{{ item.id }}</td>
-						<td>{{ item.name }}</td>
-						<td>{{ item.job_type }}</td>
-						<td>{{ item.age }}</td>
-						<td>{{ item.native_place }}</td>
-						<td style="text-align: right;">{{ item.education }}</td>
-						<td>{{ item.resume }}</td>
-						<td style="text-align: right;">{{ item.contact }}</td>
+						<template v-if="item.auditStatus==='0'">
+							<td><input
+									:checked="false" type="checkbox">
+							</td>
+							<td class="talents"  style="text-align: center;">{{ item.id }}</td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.job_type }}</td>
+							<td>{{ item.age }}</td>
+							<td>{{ item.native_place }}</td>
+							<td style="text-align: right;">{{ item.education }}</td>
+							<td>{{ item.resume }}</td>
+							<td style="text-align: right;">{{ item.contact }}</td>
+						</template>
 					</tr>
 					</tbody>
 				</table>
@@ -151,7 +176,20 @@ async function onCheckboxChanged(event) {
 </template>
 
 <style lang="scss" scoped>
+.tabs {
+	display: flex;
+	align-items: center;
 
+
+	button {
+		display: inline-block;
+		margin-right: 15px;
+		width: 70px;
+		height: 40px;
+		cursor: pointer;
+		text-align: center;
+	}
+}
 .active {
 	color: blue;
 }

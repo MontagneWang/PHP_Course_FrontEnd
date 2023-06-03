@@ -51,10 +51,10 @@ async function onCheckboxChanged(event) {
 
 <template>
 	<h1>我的信息&emsp;
-		<span class="audit"
-		      :class="store.userInfo.auditStatus!=='0'?'success':'pending'">
-			{{store.userInfo.auditStatus!=='0'?'已审核':'待审核'}}
-		</span>
+		<!--<span class="audit"-->
+		<!--      :class="store.userInfo.auditStatus==='0'?'pending':'success'">-->
+		<!--	{{store.userInfo.auditStatus==='0'?'待审核':'已审核'}}-->
+		<!--</span>-->
 	</h1>
 	<div class="container border">
 		<div class="left border">

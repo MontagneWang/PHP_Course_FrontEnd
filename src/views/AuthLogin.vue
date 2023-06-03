@@ -16,6 +16,14 @@ let password = ref('');
 let passwordConfirm = ref('');
 let isLogin = ref(true);
 let data = ref({});
+// 用于表单传参
+let signup1 = ref('')
+let signup2 = ref('')
+let signup3 = ref('')
+let signup4 = ref('')
+let signup5 = ref('')
+let signup6 = ref('')
+let signup7 = ref('')
 
 watchEffect(() => {
 	currentTab.value = Number(router.currentRoute.value.query.identity)
@@ -39,7 +47,14 @@ async function handleSubmit() {
 		isLogin: isLogin.value,
 		identity: currentTab.value,
 		username: username.value,
-		password: password.value
+		password: password.value,
+		signup1:signup1.value,
+		signup2:signup2.value,
+		signup3:signup3.value,
+		signup4:signup4.value,
+		signup5:signup5.value,
+		signup6:signup6.value,
+		signup7:signup7.value
 	}, config);
 	data.value = response
 	switch (data.value.code) {
@@ -75,6 +90,8 @@ async function handleSubmit() {
 			break
 		case '20101':
 			store.userId = data.value.data.id
+			store.userInfo.identity = data.value.data.identity
+			store.userInfo.auditStatus='0'
 			switch (data.value.data.identity) {
 				case '0':
 					username.value = ''
@@ -115,7 +132,7 @@ async function handleSubmit() {
 		</modal>
 	</Teleport>
 
-	<div class="login">
+	<div class="login" :style="{marginTop:isLogin?'20vh':'5vh'}">
 		<div class="tabs">
 			<span>请选择您的登录身份：</span>
 			<button :class="{ active: currentTab === 0 }"
@@ -145,19 +162,119 @@ async function handleSubmit() {
 				</label>
 			</div>
 
-			<!-- 只有在注册模式下才显示确认密码输入框 -->
-			<div v-if="!isLogin">
+			<!-- 只有在用户注册才显示 -->
+			<template  v-if="!isLogin&&currentTab===0">
+			<div>
 				<br>
 				<label>确认密码：
 					<input v-model.trim="passwordConfirm" required type="password"/>
 				</label>
 			</div>
+			<hr>
+
+			<div >
+				<label>&emsp;&emsp;姓名：
+					<input v-model.trim="signup1" required type="text"/>
+				</label>
+			</div>
+			<br>
+			<div >
+				<label>求职类型：
+					<input v-model.trim="signup2" required type="text"/>
+				</label>
+			</div>
+			<br>
+			<div >
+				<label>&emsp;&emsp;年龄：
+					<input v-model.trim="signup3" required type="text"/>
+				</label>
+			</div>
+			<br>
+			<div >
+				<label>&emsp;&emsp;籍贯：
+					<input v-model.trim="signup4" required type="text"/>
+				</label>
+			</div>
+			<br>
+			<div >
+				<label>&emsp;&emsp;学历：
+					<input v-model.trim="signup5" required type="text"/>
+				</label>
+			</div>
+			<br>
+			<div >
+				<label>&emsp;&emsp;简历：
+					<input v-model.trim="signup6" required type="text"/>
+				</label>
+			</div>
+			<br>
+			<div >
+				<label>联系方式：
+					<input v-model.trim="signup7" required type="text"/>
+				</label>
+			</div>
+			</template>
+
+			<!-- 只有在公司注册才显示 -->
+			<template  v-if="!isLogin&&currentTab===1">
+				<div>
+					<br>
+					<label>确认密码：
+						<input v-model.trim="passwordConfirm" required type="password"/>
+					</label>
+				</div>
+				<hr>
+
+				<div >
+					<label>所属行业：
+						<input v-model.trim="signup1" required type="text"/>
+					</label>
+				</div>
+				<br>
+				<div >
+					<label>&emsp;&emsp;名称：
+						<input v-model.trim="signup2" required type="text"/>
+					</label>
+				</div>
+				<br>
+				<div >
+					<label>&emsp;&emsp;地址：
+						<input v-model.trim="signup3" required type="text"/>
+					</label>
+				</div>
+				<br>
+				<div >
+					<label>&emsp;&emsp;法人：
+						<input v-model.trim="signup4" required type="text"/>
+					</label>
+				</div>
+				<br>
+				<div >
+					<label>注册资本：
+						<input v-model.trim="signup5" required type="text"/>
+					</label>
+				</div>
+				<br>
+				<div >
+					<label>其他介绍：
+						<input v-model.trim="signup6" required type="text"/>
+					</label>
+				</div>
+				<br>
+				<div >
+					<label>联系方式：
+						<input v-model.trim="signup7" required type="text"/>
+					</label>
+				</div>
+			</template>
 			<br>
 
 			<div class="foot-button">
 				<button type="submit">点击{{ isLogin ? '登录' : '注册' }}</button>
 				<button @click.prevent="isLogin=!isLogin">切换到 {{ isLogin ? '注册' : '登录' }}</button>
 			</div>
+			<br>
+			<br>
 		</form>
 	</div>
 </template>
@@ -168,7 +285,6 @@ async function handleSubmit() {
 	margin: 0 auto;
 
 	.tabs {
-		margin-top: 20vh;
 		text-align: center;
 
 		button {

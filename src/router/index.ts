@@ -17,7 +17,7 @@ const routes = [
 		component: Search,
 		meta: {
 			title: 'Search',
-			keepAlive: true,
+			keepAlive: false,
 			requireAuth: false
 		}
 	},
@@ -27,7 +27,7 @@ const routes = [
 		component: Login,
 		meta: {
 			title: 'Login',
-			keepAlive: true,
+			keepAlive: false,
 			requireAuth: false
 		}
 	},
@@ -37,7 +37,7 @@ const routes = [
 		component: User,
 		meta: {
 			title: 'User',
-			keepAlive: true,
+			keepAlive: false,
 			requireAuth: true,
 			identityAuth: 0
 		}
@@ -48,7 +48,7 @@ const routes = [
 		component: Company,
 		meta: {
 			title: 'Company',
-			keepAlive: true,
+			keepAlive: false,
 			requireAuth: true,
 			identityAuth: 1
 		}
@@ -59,7 +59,7 @@ const routes = [
 		component: Backend,
 		meta: {
 			title: 'Backend',
-			keepAlive: true,
+			keepAlive: false,
 			requireAuth: true,
 			identityAuth: 2
 		}
@@ -74,7 +74,7 @@ const router = VueRouter.createRouter({
 
 router.beforeEach((to, from, next) => {
 	//@ts-ignore
-	if (!to.meta.requireAuth || store.LoginIdentity === 2 || store.LoginIdentity === to.meta.identityAuth) {
+	if (!to.meta.requireAuth || store.LoginIdentity === to.meta.identityAuth) {
 		next();
 	} else if	(to.meta.requireAuth && store.LoginIdentity !== to.meta.identityAuth) {
 		next({
