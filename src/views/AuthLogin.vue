@@ -134,7 +134,7 @@ async function handleSubmit() {
 
 	<div class="login" :style="{marginTop:isLogin?'20vh':'5vh'}">
 		<div class="tabs">
-			<span>请选择您的登录身份：</span>
+			<span>请选择您的{{ isLogin?'登录':'注册' }}身份：</span>
 			<button :class="{ active: currentTab === 0 }"
 			        @click="changeTab(0)">人才用户
 			</button>
